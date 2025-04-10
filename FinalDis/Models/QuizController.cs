@@ -1,125 +1,118 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DissertationProject.Models;
+﻿using DissertationProject.Models;
 using FinalDis.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace DissertationProject.Controllers
+public class QuizController : Controller
 {
-    public class QuizController : Controller
+    private readonly FinalDisContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
+
+    public QuizController(FinalDisContext context, UserManager<IdentityUser> userManager)
     {
-        private readonly FinalDisContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        _context = context;
+        _userManager = userManager;
+    }
 
-        public QuizController(FinalDisContext context, UserManager<IdentityUser> userManager)
+    // Action to display the quiz
+    public async Task<IActionResult> Index()
+    {
+        var quizzes = await _context.Quizzes
+            .Include(q => q.Topic)
+            .ToListAsync();
+
+        return View(quizzes);
+    }
+
+    public async Task<IActionResult> SubmitQuiz(int quizId, List<int> selectedAnswers)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            _context = context;
-            _userManager = userManager;
+            return RedirectToAction("Login", "Account");  // Redirect to login if not logged in
         }
 
-        // Action to display the quiz
-        public async Task<IActionResult> Index()
-        {
-            // Fetch topics and quizzes from the database
-            var quizzes = await _context.Quizzes
-                .Include(q => q.Topic)
-                .ToListAsync();
+        // Fetch the quiz and its related questions and answers
+        var quiz = await _context.Quizzes
+            .Include(q => q.Questions)
+                .ThenInclude(q => q.Answers)
+            .FirstOrDefaultAsync(q => q.QuizID == quizId);
 
-            return View(quizzes);
+        if (quiz == null)
+        {
+            return NotFound();  // Return 404 if quiz doesn't exist
         }
 
-        // POST action to handle quiz submission
-        [HttpPost]
-        [HttpPost]
-        public async Task<IActionResult> SubmitQuiz(int quizId, List<int> selectedAnswers)
+        int correctAnswersCount = 0;
+
+        // Iterate through the quiz questions and check if the selected answers are correct
+        foreach (var question in quiz.Questions)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            foreach (var answer in question.Answers)
             {
-                return RedirectToAction("Login", "Account"); // Redirect to login if the user is not logged in
-            }
-
-            // Fetch the quiz and its related questions and answers
-            var quiz = await _context.Quizzes
-                .Include(q => q.Questions)
-                    .ThenInclude(q => q.Answers)
-                .FirstOrDefaultAsync(q => q.QuizID == quizId);
-
-            if (quiz == null)
-            {
-                return NotFound();
-            }
-
-            int correctAnswersCount = 0;
-
-            // Evaluate each question and check for correct answers
-            foreach (var question in quiz.Questions)
-            {
-                // Get the selected answer IDs for this question
-                var selectedAnswerIds = selectedAnswers.Where(ans => ans == question.QuestionID).ToList();
-
-                // Check if the selected answer is correct
-                foreach (var answerId in selectedAnswerIds)
+                if (selectedAnswers.Contains(answer.AnswerID) && answer.IsCorrect)
                 {
-                    var answer = question.Answers.FirstOrDefault(a => a.AnswerID == answerId && a.IsCorrect);
-                    if (answer != null)
-                    {
-                        correctAnswersCount++;
-                    }
+                    correctAnswersCount++;
                 }
             }
-
-            // Assuming 10 points per correct answer
-            int pointsEarned = correctAnswersCount * 10;
-
-            // Award points to the user
-            await AwardPointsAsync(user, pointsEarned);
-
-            // Store the result message
-            TempData["Message"] = $"You earned {pointsEarned} points for completing the quiz.";
-
-            return RedirectToAction("Result");
         }
 
-        private async Task AwardPointsAsync(IdentityUser user, int pointsEarned)
+        // Assuming 10 points per correct answer
+        int pointsEarned = correctAnswersCount * 10;
+
+        // Award badge if the user answers all questions correctly (this could be any condition you want)
+        if (correctAnswersCount == quiz.Questions.Count)  // Example condition for a badge
         {
-            var userPoints = await _context.UserPoints
-                .FirstOrDefaultAsync(up => up.UserId == user.Id);
+            await AwardBadgeAsync(user, "PerfectQuizTaker");  // Award the "PerfectQuizTaker" badge
+        }
 
-            if (userPoints == null)
+        // Store the result message in TempData to show it on the result page
+        TempData["Message"] = $"You earned {pointsEarned} points for completing the quiz.";
+
+        // Redirect to the Result page to show the achievements and badges
+        return RedirectToAction("Result");
+    }
+
+
+    private async Task AwardBadgeAsync(IdentityUser user, string badge)
+    {
+        // Check if the user already has the badge
+        var existingBadge = await _context.UserAchievements
+            .FirstOrDefaultAsync(ua => ua.UserId == user.Id && ua.Badge == badge);
+
+        // Only award the badge if the user hasn't already earned it
+        if (existingBadge == null)
+        {
+            var userAchievement = new UserAchievement
             {
-                userPoints = new UserPoints
-                {
-                    UserId = user.Id,
-                    Points = 0
-                };
-                _context.UserPoints.Add(userPoints);
-            }
+                UserId = user.Id,
+                Badge = badge,
+                DateAchieved = DateTime.UtcNow
+            };
 
-            userPoints.Points += pointsEarned; // Add points to existing total
+            _context.UserAchievements.Add(userAchievement);
             await _context.SaveChangesAsync();
         }
-
-
-        public async Task<IActionResult> Result()
+    }
+    public async Task<IActionResult> Result()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var userPoints = await _context.UserPoints
-                .FirstOrDefaultAsync(up => up.UserId == user.Id);
-
-            ViewData["Message"] = TempData["Message"]?.ToString();
-            ViewData["Points"] = userPoints?.Points ?? 0;
-
-            return View();
+            return RedirectToAction("Login", "Account");  // Redirect to login if not logged in
         }
 
+        // Get the user's achievements (badges earned)
+        var userAchievements = await _context.UserAchievements
+            .Where(ua => ua.UserId == user.Id)
+            .ToListAsync();
+
+        ViewData["Message"] = TempData["Message"]?.ToString();
+        ViewData["UserAchievements"] = userAchievements;  // Pass achievements to the view
+
+        return View();
     }
+
 }
+

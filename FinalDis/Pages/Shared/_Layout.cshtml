@@ -20,11 +20,12 @@
                         {
                             <!-- Show Logout button if the user is authenticated -->
                             <li class="nav-item">
-                                <form method="post" action="/Identity/Account/Logout" class="d-inline">
+                                <form method="post" asp-area="Identity" asp-page="/Account/Logout" class="d-inline">
                                     <button type="submit" class="btn btn-link nav-link">Logout</button>
                                 </form>
                             </li>
                         }
+
                         else
                         {
                             <!-- Show Login link if the user is not authenticated -->

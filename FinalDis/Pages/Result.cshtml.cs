@@ -1,4 +1,3 @@
-using Azure;
 using DissertationProject.Models;
 using FinalDis.Data;
 using Microsoft.AspNetCore.Identity;
@@ -14,6 +13,7 @@ namespace DissertationProject.Pages
 
         public string Message { get; set; }
         public int Points { get; set; }
+        public List<UserAchievement> UserAchievements { get; set; } = new List<UserAchievement>();
 
         public ResultModel(FinalDisContext context, UserManager<IdentityUser> userManager)
         {
@@ -33,13 +33,18 @@ namespace DissertationProject.Pages
                 return; // Ensure that no further processing occurs after redirection
             }
 
-            // Retrieve the user's points
+            // Retrieve the user's points from UserPoints table
             var userPoints = await _context.UserPoints
                 .FirstOrDefaultAsync(up => up.UserId == user.Id);
 
             // Set the message and points for the Razor page
             Message = TempData["Message"]?.ToString();
             Points = userPoints?.Points ?? 0;
+
+            // Retrieve the user's achievements from UserAchievements table
+            UserAchievements = await _context.UserAchievements
+                .Where(ua => ua.UserId == user.Id)
+                .ToListAsync();
         }
     }
 }

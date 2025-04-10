@@ -20,8 +20,8 @@ public static class DbInitializer
         // Seed Questions
         SeedQuestions(context);
 
-        // Seed Answers
-        SeedAnswers(context);
+
+        SeedUserAchievements(context);
 
         // Seed Identity Roles
         SeedRoles(roleManager);
@@ -44,13 +44,16 @@ public static class DbInitializer
         }
     }
 
+
+
     // Method to seed users
     private static void SeedUsers(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, FinalDisContext context)
     {
         var users = new[]
         {
             new { Email = "admin@admin.com", UserName = "admin@admin.com", Role = "Admin" },
-            new { Email = "user@user.com", UserName = "user@user.com", Role = "User" }
+            new { Email = "user@user.com", UserName = "user@user.com", Role = "User" },
+            new { Email = "Test@Test", UserName = "Test@Test", Role = "User" }
         };
 
         foreach (var userInfo in users)
@@ -364,10 +367,59 @@ public static class DbInitializer
     }
 
 
-    // Method to seed answers
-    private static void SeedAnswers(FinalDisContext context)
+    private static void SeedUserAchievements(FinalDisContext context)
     {
-        // Answers are already seeded within questions, but if needed,
-        // they can be added separately here.
+        // Ensure users exist before seeding achievements
+        var adminUser = context.Users.FirstOrDefault(u => u.Email == "admin@admin.com");
+        var regularUser = context.Users.FirstOrDefault(u => u.Email == "Test@test");
+
+        if (adminUser != null && regularUser != null)
+        {
+            // List of user achievements to add
+            var userAchievements = new List<UserAchievement>
+        {
+            new UserAchievement
+            {
+                UserId = adminUser.Id, // Use the actual UserId of the admin user
+                Badge = "PerfectQuizTaker",
+                DateAchieved = DateTime.UtcNow
+            },
+            new UserAchievement
+            {
+                UserId = regularUser.Id, // Use the actual UserId of the regular user
+                Badge = "FirstQuizCompleted",
+                DateAchieved = DateTime.UtcNow
+            }
+        };
+
+            // Check if each achievement already exists, and only insert if it doesn't
+            foreach (var achievement in userAchievements)
+            {
+                // Check if the user already has the badge
+                var existingAchievement = context.UserAchievements
+                    .FirstOrDefault(ua => ua.UserId == achievement.UserId && ua.Badge == achievement.Badge);
+
+                // If the achievement doesn't already exist, add it
+                if (existingAchievement == null)
+                {
+                    context.UserAchievements.Add(achievement);
+                    Console.WriteLine($"Achievement {achievement.Badge} added for user {achievement.UserId}");
+                }
+                else
+                {
+                    Console.WriteLine($"Achievement {achievement.Badge} already exists for user {achievement.UserId}");
+                }
+            }
+
+            // Save changes to the database
+            context.SaveChanges();
+        }
+        else
+        {
+            Console.WriteLine("Error: One or more users not found.");
+        }
     }
 }
+
+
+

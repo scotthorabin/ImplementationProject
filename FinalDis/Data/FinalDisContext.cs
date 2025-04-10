@@ -13,6 +13,9 @@ namespace FinalDis.Data
         { }
 
         // Your custom DbSets
+
+        
+       public DbSet<UserAchievement> UserAchievements { get; set; }  // For storing user badges
         public DbSet<UserPoints> UserPoints { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
@@ -23,7 +26,10 @@ namespace FinalDis.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Customize your model here if needed
+
+            // Define composite key for UserAchievement
+            modelBuilder.Entity<UserAchievement>()
+                .HasKey(ua => new { ua.UserId, ua.Badge });
         }
     }
 }
