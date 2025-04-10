@@ -1,0 +1,13 @@
+﻿@page
+@model DissertationProject.Pages.ResultModel
+
+@{
+    ViewData["Title"] = "Quiz Results";
+}
+
+<h1>Quiz Results</h1>
+
+<p>@Model.Message</p>
+<p>You earned @Model.Points points!</p>
+
+<a href="@Url.Page("/Index")" class="btn btn-primary">Back to Quizzes</a>

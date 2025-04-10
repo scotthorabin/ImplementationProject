@@ -1,0 +1,42 @@
+﻿/* wwwroot/css/PageSpecificStyles.css */
+body {
+    background-color: white;
+}
+
+.answerText {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: 10px 0;
+}
+
+.quiz {
+    width: 100%;
+    padding: 50px 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.heading {
+    font-size: 50px;
+    margin: 20px 0;
+}
+
+.submit {
+    background-color: #007bff;
+    padding: 5px 100px;
+    margin: 20px 0;
+    border-radius: 20px;
+    color: white;
+    transition: ease 0.3s;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.submit:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.tickbox {
+    width: 20px;
+    height:15px;
+}

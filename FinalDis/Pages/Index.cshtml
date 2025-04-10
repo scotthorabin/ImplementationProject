@@ -1,0 +1,48 @@
+﻿@page
+@model DissertationProject.Pages.Topics.IndexModel
+@{
+    ViewData["Title"] = "Topics";
+}
+<script src="~/js/site.js"></script>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<h1 class="welcome-message">Welcome</h1>
+<h1 class="text-3xl font-bold mb-4">Learn, Explore, 
+    <span class="achieve-intro">Achieve</span>. Discover Your Topic!
+</h1>
+
+@if (Model.Topics != null && Model.Topics.Any())
+{
+    <div class="topics-container">
+        <div class="topics-wrapper">
+            <!-- Left Navigation Button -->
+            <button class="scroll-btn left" onclick="scrollTopicsLeft()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <!-- Scrollable Topics Row -->
+            <div class="topics-slider">
+                <div class="topics-grid" id="topicsGrid">
+                    @foreach (var topic in Model.Topics)
+                    {
+                        <div class="topic-card">
+                            <h2 class="topic-title">@topic.TopicName</h2>
+                            <p class="topic-description">@topic.Description</p>
+                            <a class="btn btn-primary" asp-page="/Details" asp-route-id="@topic.TopicID">View More</a>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right Navigation Button -->
+            <button class="scroll-btn right" onclick="scrollTopicsRight()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    <p class="no-topics-message">No topics are available at the moment. Please check back later.</p>
+}

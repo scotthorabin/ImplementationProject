@@ -1,0 +1,51 @@
+
+/* Title for login page*/
+.title {
+    text-align: center;
+}
+/* This is the main login form box*/
+.formbox {
+    position: relative;
+    padding: 50px;
+    border: 50px;
+    margin: 50px;
+    background-color: ghostwhite;
+    width: 1200px;
+    border-radius: 5vh;
+    left: 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+ /* This to create a border radius for the form labels*/
+.form-control {
+    border-radius: 2vh;
+    margin: auto;
+}
+/* this makes the register link bigger and bolder */
+.registertext {
+    position: relative;
+    left: 50vh;
+    font-weight: bold;
+    color: black;
+}
+
+.extra {
+    margin: 30px;
+}
+/* This makes the forgot password link bigger and bolder*/
+.forgotpassword{
+    position: relative;
+    left: 50px;
+    font-weight: bold;
+    color: black
+}
+
+.login {
+    position: relative;
+    left: 35vh;
+}
+
+.line{
+    position: relative;
+    left: 35vh;
+    width: 40%;
+}

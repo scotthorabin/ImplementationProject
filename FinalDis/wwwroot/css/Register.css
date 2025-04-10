@@ -1,0 +1,44 @@
+
+/* Title for login page*/
+.title {
+    text-align: center;
+}
+/* This is the main login form box*/
+.formbox {
+    position: relative;
+    padding: 50px;
+    border: 50px;
+    margin: 50px;
+    background-color: ghostwhite;
+    width: 1200px;
+    border-radius: 5vh;
+    left: 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+/* This to create a border radius for the form labels*/
+.form-control {
+    border-radius: 2vh;
+    margin: auto;
+    width: 110vh;
+}
+/* This is for the new account text */
+.newa {
+    position: relative;
+    left: 40vh;
+
+}
+/* This is for the line underneath the new account text */
+.hr {
+    position: relative;
+    left: 38vh;
+}
+/* This is for the register button */
+.regButton {
+    width: 110vh;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    padding: .5rem 1rem;
+    font-size: 1.25rem;
+    border-radius: .3rem;
+    color: #fff;
+}

@@ -1,0 +1,58 @@
+﻿@page "{id:int}"
+@model DissertationProject.Pages.Topics.DetailsModel
+@{
+    ViewData["Title"] = Model.Topic.TopicName;
+}
+
+<div class="details-container">
+    <h1 class="details-title">@Model.Topic.TopicName</h1>
+
+    <p class="details-description">@Model.Topic.Description</p>
+
+    <h2 class="details-section-title">What is it?</h2>
+    @if (!string.IsNullOrWhiteSpace(Model.Topic.WhatItIs))
+    {
+        @foreach (var paragraph in Model.Topic.WhatItIs.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            <p class="details-description">@paragraph</p>
+        }
+    }
+    else
+    {
+        <p>No information provided.</p>
+    }
+
+    <h2 class="details-section-title">Key Concepts?</h2>
+    @if (!string.IsNullOrWhiteSpace(Model.Topic.Concepts))
+    {
+        @foreach (var paragraph in Model.Topic.Concepts.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            <p class="details-description">@paragraph</p>
+        }
+    }
+    else
+    {
+        <p>No information provided.</p>
+    }
+
+    <h2 class="details-section-title">Related Quizzes</h2>
+    @if (Model.Topic.Quizzes != null && Model.Topic.Quizzes.Any())
+    {
+        <ul class="quiz-list">
+            @foreach (var quiz in Model.Topic.Quizzes)
+            {
+                <li>
+                    <a class="quiz-link" asp-page="/TakeQuiz" asp-route-id="@quiz.QuizID">
+                        @quiz.QuizTitle
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="no-quizzes">No quizzes available for this topic.</p>
+    }
+
+    <a class="back-link" asp-page="/Index">Back to Topics</a>
+</div>

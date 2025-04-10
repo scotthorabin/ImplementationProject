@@ -1,0 +1,31 @@
+﻿@page
+@model DissertationProject.Pages.Quizzes.TakeQuizModel
+@{
+    ViewData["Title"] = "Take Quiz";
+}
+
+
+<link rel="stylesheet" href="~/css/TakeQuiz.css" />
+
+<h1>@Model.Quiz.QuizTitle</h1>
+
+<form method="post" class="quiz">
+    @for (int i = 0; i < Model.Quiz.Questions.Count; i++)
+    {
+        var question = Model.Quiz.Questions[i];
+
+        <h3 class="heading">@question.QuestionText</h3>
+
+        @foreach (var answer in question.Answers)
+        {
+            <input class="tickbox" type="radio" name="UserAnswers[@i].SelectedAnswerID" value="@answer.AnswerID" />
+            <label class="answerText">@answer.AnswerText</label>
+
+            <br />
+        }
+
+        <input type="hidden" name="UserAnswers[@i].QuestionID" value="@question.QuestionID" />
+    }
+
+    <button class="submit" type="submit">Submit</button>
+</form>
