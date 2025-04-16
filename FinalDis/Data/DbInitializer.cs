@@ -50,21 +50,10 @@ public static class DbInitializer
                     Email = userInfo.Email,
                 };
 
-                var result = userManager.CreateAsync(user, "Test@123").Result;
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(user, userInfo.Role).Wait();
-                    var userPoints = new UserPoints
-                    {
-                        UserId = user.Id,
-                        Points = 0
-                    };
-                    context.UserPoints.Add(userPoints);
-                    context.SaveChanges();
+
                 }
             }
         }
-    }
 
     private static void SeedTopics(FinalDisContext context)
     {
@@ -189,7 +178,14 @@ public static class DbInitializer
             var quiz2 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Data Structures Quiz");
             var quiz3 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Web Development Quiz");
             var quiz4 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Algorithms Quiz");
+            var quiz5 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Databases Quiz");
+            var quiz6 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Mobile Development Quiz");
+            var quiz7 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Operating Systems Quiz");
+            var quiz8 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Cybersecurity Quiz");
+            var quiz9 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Cloud Computing Quiz");
+            var quiz10 = context.Quizzes.FirstOrDefault(q => q.QuizTitle == "Machine Learning Quiz");
 
+            // OOP Concepts Quiz
             if (quiz1 != null)
             {
                 var questionsQuiz1 = new List<Question>
@@ -219,6 +215,7 @@ public static class DbInitializer
                 context.SaveChanges();
             }
 
+            // Data Structures Quiz
             if (quiz2 != null)
             {
                 var questionsQuiz2 = new List<Question>
@@ -248,6 +245,7 @@ public static class DbInitializer
                 context.SaveChanges();
             }
 
+            // Web Development Quiz
             if (quiz3 != null)
             {
                 var questionsQuiz3 = new List<Question>
@@ -279,6 +277,7 @@ public static class DbInitializer
                 context.SaveChanges();
             }
 
+            // Algorithms Quiz
             if (quiz4 != null)
             {
                 var questionsQuiz4 = new List<Question>
@@ -307,6 +306,212 @@ public static class DbInitializer
                 context.Questions.AddRange(questionsQuiz4);
                 context.SaveChanges();
             }
+
+            // Databases Quiz
+            if (quiz5 != null)
+            {
+                var questionsQuiz5 = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "What does SQL stand for?",
+                        QuizID = quiz5.QuizID,
+                        Answers = new List<Answer>
+                        {
+                            new Answer { AnswerText = "Structured Query Language", IsCorrect = true },
+                             new Answer { AnswerText = "Standard Question Language", IsCorrect = false },
+                             new Answer { AnswerText = "Simple Query Language", IsCorrect = false },
+                             new Answer { AnswerText = "Sequential Query Line", IsCorrect = false }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "Which operation is NOT part of CRUD?",
+                        QuizID = quiz5.QuizID,
+                        Answers = new List<Answer>
+                        {
+                             new Answer { AnswerText = "Calculate", IsCorrect = false },
+                             new Answer { AnswerText = "Create", IsCorrect = true },
+                            new Answer { AnswerText = "Read", IsCorrect = true },
+                            new Answer { AnswerText = "Delete", IsCorrect = true }
+                        }
+                    }
+                };
+                context.Questions.AddRange(questionsQuiz5);
+                context.SaveChanges();
+            }
+
+            // Mobile Development Quiz
+            if (quiz6 != null)
+            {
+                var questionsQuiz6 = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "Which language is used to develop iOS apps?",
+                        QuizID = quiz6.QuizID,
+                        Answers = new List<Answer>
+                        {
+                           new Answer { AnswerText = "Swift", IsCorrect = true },
+                           new Answer { AnswerText = "Kotlin", IsCorrect = false },
+                           new Answer { AnswerText = "Java", IsCorrect = false },
+                           new Answer { AnswerText = "Dart", IsCorrect = false }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "Which framework allows cross-platform mobile app development?",
+                        QuizID = quiz6.QuizID,
+                        Answers = new List<Answer>
+                        {
+                          new Answer { AnswerText = "Flutter", IsCorrect = true },
+                          new Answer { AnswerText = "React", IsCorrect = false },
+                          new Answer { AnswerText = "Angular", IsCorrect = false },
+                          new Answer { AnswerText = "ASP.NET", IsCorrect = false }
+                        }
+                    }
+                };
+                context.Questions.AddRange(questionsQuiz6);
+                context.SaveChanges();
+            }
+
+            // Operating Systems Quiz
+            if (quiz7 != null)
+            {
+                var questionsQuiz7 = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "Which of the following is a core function of an operating system?",
+                        QuizID = quiz7.QuizID,
+                        Answers = new List<Answer>
+                        {
+                           new Answer { AnswerText = "Memory Management", IsCorrect = true },
+                           new Answer { AnswerText = "Web Hosting", IsCorrect = false },
+                           new Answer { AnswerText = "Data Mining", IsCorrect = false },
+                           new Answer { AnswerText = "Game Design", IsCorrect = false }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "What does CPU scheduling refer to?",
+                        QuizID = quiz7.QuizID,
+                        Answers = new List<Answer>
+                        {
+                              new Answer { AnswerText = "Allocating CPU time to processes", IsCorrect = true },
+                              new Answer { AnswerText = "Scheduling meetings", IsCorrect = false },
+                              new Answer { AnswerText = "Data visualization", IsCorrect = false },
+                              new Answer { AnswerText = "Creating threads", IsCorrect = false }
+                        }
+                    }
+                };
+                context.Questions.AddRange(questionsQuiz7);
+                context.SaveChanges();
+            }
+
+            // Cybersecurity Quiz
+            if (quiz8 != null)
+            {
+                var questionsQuiz8 = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "What is the purpose of encryption?",
+                        QuizID = quiz8.QuizID,
+                        Answers = new List<Answer>
+                        {
+                            new Answer { AnswerText = "To protect data using algorithms", IsCorrect = true },
+                            new Answer { AnswerText = "To remove viruses", IsCorrect = false },
+                            new Answer { AnswerText = "To create user interfaces", IsCorrect = false },
+                            new Answer { AnswerText = "To increase website speed", IsCorrect = false }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText =  "Which of the following is considered malware?",
+                        QuizID = quiz8.QuizID,
+                        Answers = new List<Answer>
+                        {
+                              new Answer { AnswerText = "Ransomware", IsCorrect = true },
+                              new Answer { AnswerText = "Firewall", IsCorrect = false },
+                              new Answer { AnswerText = "VPN", IsCorrect = false },
+                              new Answer { AnswerText = "Compiler", IsCorrect = false }
+                        }
+                    }
+                };
+                context.Questions.AddRange(questionsQuiz8);
+                context.SaveChanges();
+            }
+            
+            // Cloud Computing Quiz
+            if (quiz9 != null)
+            {
+                var questionsQuiz9 = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "Which of the following is a cloud platform?",
+                        QuizID = quiz9.QuizID,
+                        Answers = new List<Answer>
+                        {
+                              new Answer { AnswerText = "AWS", IsCorrect = true },
+                              new Answer { AnswerText = "Windows", IsCorrect = false },
+                              new Answer { AnswerText = "Linux", IsCorrect = false },
+                              new Answer { AnswerText = "Node.js", IsCorrect = false }
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "What does virtualization in cloud computing mean?",
+                        QuizID = quiz9.QuizID,
+                        Answers = new List<Answer>
+                        {
+                               new Answer { AnswerText = "Running multiple virtual machines on one physical machine", IsCorrect = true },
+                               new Answer { AnswerText = "Creating mobile apps", IsCorrect = false },
+                               new Answer { AnswerText = "Designing graphics", IsCorrect = false },
+                               new Answer { AnswerText = "Encrypting data", IsCorrect = false }
+                        }
+                    }
+                };
+                context.Questions.AddRange(questionsQuiz9);
+                context.SaveChanges();
+            }
+
+            // Machine Learning Quiz
+            if (quiz7 != null)
+            {
+                var questionsQuiz10 = new List<Question>
+                {
+                    new Question
+                    {
+                        QuestionText = "What is supervised learning?",
+                        QuizID = quiz10.QuizID,
+                        Answers = new List<Answer>
+                        {
+                             new Answer { AnswerText = "Training a model on labeled data", IsCorrect = true },
+                             new Answer { AnswerText = "Training on unstructured audio", IsCorrect = false },
+                             new Answer { AnswerText = "Running queries on SQL", IsCorrect = false },
+                             new Answer { AnswerText = "Training without any data", IsCorrect = false }
+
+                        }
+                    },
+                    new Question
+                    {
+                        QuestionText = "Which of the following is a type of machine learning?",
+                        QuizID = quiz10.QuizID,
+                        Answers = new List<Answer>
+                        {
+                            new Answer { AnswerText = "Unsupervised Learning", IsCorrect = true },
+                            new Answer { AnswerText = "Multithreading", IsCorrect = false },
+                            new Answer { AnswerText = "Refactoring", IsCorrect = false },
+                            new Answer { AnswerText = "Caching", IsCorrect = false }
+                        }
+                    }
+                };
+                context.Questions.AddRange(questionsQuiz10);
+                context.SaveChanges();
+            }
+
         }
     }
 

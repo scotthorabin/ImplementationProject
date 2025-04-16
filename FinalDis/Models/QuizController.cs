@@ -33,7 +33,6 @@ public class QuizController : Controller
             return RedirectToAction("Login", "Account");  // Redirect to login if not logged in
         }
 
-        // Fetch the quiz and its related questions and answers
         var quiz = await _context.Quizzes
             .Include(q => q.Questions)
                 .ThenInclude(q => q.Answers)
@@ -41,12 +40,11 @@ public class QuizController : Controller
 
         if (quiz == null)
         {
-            return NotFound();  // Return 404 if quiz doesn't exist
+            return NotFound();
         }
 
         int correctAnswersCount = 0;
 
-        // Iterate through the quiz questions and check if the selected answers are correct
         foreach (var question in quiz.Questions)
         {
             foreach (var answer in question.Answers)
@@ -58,19 +56,24 @@ public class QuizController : Controller
             }
         }
 
-        // Assuming 10 points per correct answer
         int pointsEarned = correctAnswersCount * 10;
 
-        // Award badge if the user answers all questions correctly (this could be any condition you want)
-        if (correctAnswersCount == quiz.Questions.Count)  // Example condition for a badge
+        if (correctAnswersCount == quiz.Questions.Count)
         {
-            await AwardBadgeAsync(user, "PerfectQuizTaker");  // Award the "PerfectQuizTaker" badge
+            await AwardBadgeAsync(user, "PerfectQuizTaker");
         }
 
-        // Store the result message in TempData to show it on the result page
+        // ✅ NEW LOGIC HERE: First-time quiz completion badge
+        var hasCompletedBadge = await _context.UserAchievements
+            .AnyAsync(ua => ua.UserId == user.Id && ua.Badge == "FirstQuizCompleted");
+
+        if (!hasCompletedBadge)
+        {
+            await AwardBadgeAsync(user, "FirstQuizCompleted");
+        }
+
         TempData["Message"] = $"You earned {pointsEarned} points for completing the quiz.";
 
-        // Redirect to the Result page to show the achievements and badges
         return RedirectToAction("Result");
     }
 
