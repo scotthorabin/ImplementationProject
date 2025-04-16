@@ -5,6 +5,8 @@
         public int TopicID { get; set; }
         public string TopicName { get; set; }
         public string Description { get; set; }
+
+        public string Information { get; set; }
         public List<Quiz> Quizzes { get; set; }
         public string WhatItIs { get; set; }
 

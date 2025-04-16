@@ -9,6 +9,7 @@
 
     <p class="details-description">@Model.Topic.Description</p>
 
+    <!-- 'What is it?' Section -->
     <h2 class="details-section-title">What is it?</h2>
     @if (!string.IsNullOrWhiteSpace(Model.Topic.WhatItIs))
     {
@@ -22,7 +23,8 @@
         <p>No information provided.</p>
     }
 
-    <h2 class="details-section-title">Key Concepts?</h2>
+    <!-- 'Key Concepts' Section -->
+    <h2 class="details-section-title">Key Concepts</h2>
     @if (!string.IsNullOrWhiteSpace(Model.Topic.Concepts))
     {
         @foreach (var paragraph in Model.Topic.Concepts.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
@@ -35,6 +37,21 @@
         <p>No information provided.</p>
     }
 
+    <!-- 'Additional Information' Section -->
+    <h2 class="details-section-title">Additional Information</h2>
+    @if (!string.IsNullOrWhiteSpace(Model.Topic.Information))
+    {
+        @foreach (var paragraph in Model.Topic.Information.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            <p class="details-description">@paragraph</p>
+        }
+    }
+    else
+    {
+        <p>No information provided.</p>
+    }
+
+    <!-- 'Related Quizzes' Section -->
     <h2 class="details-section-title">Related Quizzes</h2>
     @if (Model.Topic.Quizzes != null && Model.Topic.Quizzes.Any())
     {
@@ -54,5 +71,6 @@
         <p class="no-quizzes">No quizzes available for this topic.</p>
     }
 
+    <!-- Link to go back to the Topics page -->
     <a class="back-link" asp-page="/Index">Back to Topics</a>
 </div>
