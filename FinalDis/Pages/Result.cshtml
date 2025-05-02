@@ -6,27 +6,39 @@
     ViewData["Title"] = "Quiz Results";
 }
 
-<h1>Quiz Results</h1>
-
-<!-- Display the result message stored in TempData -->
-<p>@Model.Message</p>
-
-<h2>Your Achievements</h2>
-
-@if (Model.UserAchievements != null && Model.UserAchievements.Any())
-{
-    <ul>
-        @foreach (var achievement in Model.UserAchievements)
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-primary">🎉 Results 🎉</h1>
+        @if (!string.IsNullOrEmpty(Model.Message))
         {
-            <li>
-                @achievement.Badge (Achieved on @achievement.DateAchieved.ToString("MMMM dd, yyyy"))
-            </li>
+            <p class="lead text-success">@Model.Message</p>
         }
-    </ul>
-}
-else
-{
-    <p>You have not earned any badges yet.</p>
-}
+    </div>
 
-<a href="@Url.Page("/Index")" class="btn btn-primary">Back to Quizzes</a>
+    <div class="achievements-section p-4 rounded shadow-sm bg-light">
+        <h2 class="mb-4 text-secondary">🏅 Your Achievements</h2>
+
+        @if (Model.UserAchievements != null && Model.UserAchievements.Any())
+        {
+            <ul class="list-group">
+                @foreach (var achievement in Model.UserAchievements)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">@achievement.Badge</span>
+                        <span class="badge bg-primary rounded-pill">@achievement.DateAchieved.ToString("MMMM dd, yyyy")</span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <div class="alert alert-warning mt-3">
+                You do not have any badges yet. Keep learning!
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="@Url.Page("/Index")" class="btn btn-outline-primary btn-lg"> Back to Quizzes</a>
+    </div>
+</div>

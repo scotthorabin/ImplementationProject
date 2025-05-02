@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace DissertationProject.Models
 {
     public class UserAchievement
     {
-        public string UserId { get; set; }   // Foreign key to the IdentityUser
-        public string Badge { get; set; }     // The badge awarded to the user
+        [Key]
+        public int Id { get; set; }  // Primary Key
+
+        public string UserId { get; set; }   // Foreign key to IdentityUser
+        public string Badge { get; set; }    // The badge awarded
         public DateTime DateAchieved { get; set; }
-
-        // Navigation property
-        public IdentityUser User { get; set; } // Optional: if you want to access the user data from this class
+        public IdentityUser User { get; set; }
     }
-
 }

@@ -1,8 +1,9 @@
-
-/* Title for login page*/
+/* Title for login page */
 .title {
     text-align: center;
+    margin-top: 30px;
 }
+
 /* This is the main login form box*/
 .formbox {
     position: relative;
@@ -15,37 +16,36 @@
     left: 8px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
- /* This to create a border radius for the form labels*/
+
+/* Input fields */
 .form-control {
     border-radius: 2vh;
-    margin: auto;
-}
-/* this makes the register link bigger and bolder */
-.registertext {
-    position: relative;
-    left: 50vh;
-    font-weight: bold;
-    color: black;
 }
 
-.extra {
-    margin: 30px;
-}
-/* This makes the forgot password link bigger and bolder*/
-.forgotpassword{
-    position: relative;
-    left: 50px;
-    font-weight: bold;
-    color: black
-}
-
+/* Login heading */
 .login {
-    position: relative;
-    left: 35vh;
+    text-align: center;
+    font-weight: 600;
 }
 
-.line{
-    position: relative;
-    left: 35vh;
+/* Horizontal rule under heading */
+.line {
+    margin: 0 auto 20px auto;
     width: 40%;
 }
+
+/* Login action links */
+.login-links {
+    font-size: 0.95rem;
+    margin-top: 20px;
+}
+
+    .login-links a {
+        font-weight: bold;
+        color: black;
+        text-decoration: none;
+    }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }

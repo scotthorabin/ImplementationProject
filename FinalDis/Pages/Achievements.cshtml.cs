@@ -4,52 +4,40 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace DissertationProject.Pages
+namespace DissertationProject.Pages.Quizzes
 {
-    public class ResultModel : PageModel
+    public class AchievementsModel : PageModel
     {
         private readonly FinalDisContext _context;
         private readonly UserManager<IdentityUser> _userManager;
 
+        public List<UserAchievement> UserAchievements { get; set; }
         public string Message { get; set; }
-        public int Points { get; set; }
-        public List<UserAchievement> UserAchievements { get; set; } = new List<UserAchievement>();
 
-        public List<string> TopicNames { get; set; } = new List<string>(); // Add this to store topic names for each badge
-
-        public ResultModel(FinalDisContext context, UserManager<IdentityUser> userManager)
+        public AchievementsModel(FinalDisContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        public async Task OnGetAsync(int id)
+        public async Task OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
             {
+                // If the user is not logged in, redirect to the login page
                 RedirectToPage("/Account/Login");
                 return;
             }
 
-            // Retrieve the user's achievements
+            // Retrieve the user's achievements from the database
             UserAchievements = await _context.UserAchievements
                 .Where(ua => ua.UserId == user.Id)
                 .ToListAsync();
 
-            // Retrieve the message from TempData
+            // Retrieve the message from TempData, if any
             Message = TempData["Message"]?.ToString();
-
-            // Display the badge names (example)
-            foreach (var achievement in UserAchievements)
-            {
-                Console.WriteLine($"Earned Badge: {achievement.Badge}");
-            }
         }
-
     }
 }
-
-
-

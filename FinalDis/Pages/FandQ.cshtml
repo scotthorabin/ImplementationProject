@@ -1,0 +1,19 @@
+﻿@page
+@model FinalDis.Pages.FandQModel
+
+@{
+    ViewData["Title"] = "Frequently Asked Questions";
+}
+<link rel="stylesheet" type="text/css" href="~/css/faq.css" />
+<script src="~/js/FAQ.js"></script>
+
+<div class="faq-container">
+    @foreach (var faq in Model.FAQs)
+    {
+        <div class="faq-item">
+            <h4 onclick="toggleFAQ(this)">@faq.Question</h4>
+            <p>@faq.Answer</p>
+        </div>
+    }
+</div>
+

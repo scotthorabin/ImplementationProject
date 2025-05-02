@@ -1,0 +1,46 @@
+﻿@page
+@model FinalDis.Pages.TopicListModel
+
+@{
+    ViewData["Title"] = "All Topics";
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<h1 class="text-3xl font-bold mb-4">All Topics</h1>
+
+@if (Model.Topics != null && Model.Topics.Any())
+{
+    <div class="container">
+        <div class="row">
+            @foreach (var topic in Model.Topics)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card topic-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@topic.TopicName</h5>
+                            <p class="card-text">@topic.Description</p>
+                        </div>
+                        <div class="card-footer">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-primary" asp-page="/Details" asp-route-id="@topic.TopicID">View More</a>
+                            }
+                            else
+                            {
+                                <!-- Corrected Login link -->
+                                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">View More</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mt-4" role="alert">
+        No topics are available at the moment. Please check back later.
+    </div>
+}

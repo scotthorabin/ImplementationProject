@@ -4,6 +4,7 @@ using FinalDis.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalDis.Migrations
 {
     [DbContext(typeof(FinalDisContext))]
-    partial class DissertationProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20250417113740_update17th")]
+    partial class update17th
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,25 +160,6 @@ namespace FinalDis.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserPoints");
-                });
-
-            modelBuilder.Entity("FinalDis.Models.FAQ", b =>
-                {
-                    b.Property<int>("FAQID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FAQID"));
-
-                    b.Property<string>("Answer")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Question")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FAQID");
-
-                    b.ToTable("FAQs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

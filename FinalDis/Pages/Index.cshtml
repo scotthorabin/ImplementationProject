@@ -7,10 +7,80 @@
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+<body>
+    <header>
+    <div class="action">
+        <div class="profile" onclick="menuToggle()">
+            <img src="/Diss/img/user.png" />
+        </div>
+        <div class="menu">
+            <h3>@(User.Identity.IsAuthenticated ? User.Identity.Name : "Welcome")</h3>
+            <ul>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <!-- Images obtained from Flaticon (2013)-->
+                    <li><img src="/Diss/img/medal.png" alt="Medal - Flaticon (2013) " /><a asp-page="/Achievements">Achievements</a></li>
+                    <li><img src="/Diss/img/user.png" alt="Profile" /><a asp-page="/Profile">My Profile</a></li>
+                    <li>
+                        <!--// Images obtained from Flaticon (2013)-->
+                        <img src="/Diss/img/left-arrow" alt="Logout Arrow - (Flaticon, 2013)" />
+                        <form method="post" asp-area="Identity" asp-page="/Account/Logout" class="d-inline">
+                            <button type="submit" class="btn btn-link p-0">Logout</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                       <!-- Images obtained from Flaticon (2013)-->
+                    <li><img src="/Diss/img/right-arrow.png" alt="Login Right Arrow - (Flaticon, 2013)" /><a asp-area="Identity" asp-page="/Account/Login">Log In</a></li>
+                    <li><img src="/Diss/img/right-arrow.png" alt="Register Right Arrow- (Flaticon, 2013)" /><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+    </header>
+</body>
+
+
 <h1 class="welcome-message">Welcome</h1>
 <h1 class="text-3xl font-bold mb-4">Learn, Explore, 
     <span class="achieve-intro">Achieve</span>. Discover Your Topic!
 </h1>
+
+<section class="dark-journey">
+    <h2 class="journey-title">Level Up With Every Step</h2>
+    <p class="journey-subtitle">
+        Learning here is more than reading—it's a journey. Pick a topic, take on quizzes, and earn cool badges and achievements.
+    </p>
+    <div class="journey-steps">
+        <div class="journey-card">
+            <!-- Image obtained from unDraw (2022) -->
+            <img src="/Diss/img/Topic.png" alt="Woman looking a topics - (unDraw, 2022)"/>
+            <p class="step-label">Choose a Topic</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 25%;"></div></div>
+        </div>
+        <div class="journey-card">
+            <!-- Image obtained from unDraw (2022) -->
+            <img src="/Diss/img/Quiz.png"  alt="Image of a quiz format - (unDraw, 2022)">
+            <p class="step-label">Take a Quiz</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
+        </div>
+        <!-- Images obtained from Flaticon (2013)-->
+        <div class="journey-card">
+            <img src="/Diss/img/medal.png"  alt="Medal - (Flaticon, 2013) ">
+            <p class="step-label">Earn Badges</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+        </div>
+        <!-- Image obtained from unDraw (2022) -->
+        <div class="journey-card">
+            <img src="/Diss/img/Result.png"  alt="Arrow going upwards - (unDraw, 2022)">
+            <p class="step-label">Track Progress</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
+        </div>
+    </div>
+</section>
+
+<h3 class="encourage">The Topics we offer!</h3>
 
 @if (Model.Topics != null && Model.Topics.Any())
 {
@@ -29,20 +99,26 @@
                         <div class="topic-card">
                             <h2 class="topic-title">@topic.TopicName</h2>
                             <p class="topic-description">@topic.Description</p>
-                            <a class="btn btn-primary" asp-page="/Details" asp-route-id="@topic.TopicID">View More</a>
+                            
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="btn btn-primary" asp-page="/Details" asp-route-id="@topic.TopicID">View More</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">View More</a>
+                            }
                         </div>
                     }
                 </div>
             </div>
-
-            <!-- Right Navigation Button -->
-            <button class="scroll-btn right" onclick="scrollTopicsRight()">
-                <i class="fas fa-chevron-right"></i>
-            </button>
         </div>
     </div>
 }
-else
-{
-    <p class="no-topics-message">No topics are available at the moment. Please check back later.</p>
-}
+
+<script>
+    function menuToggle() {
+        const toggleMenu = document.querySelector('.menu');
+        toggleMenu.classList.toggle('active');
+    }
+</script>

@@ -1,0 +1,59 @@
+﻿/* FAQ section CSS*/
+
+body {
+    background-color: #f4f4f4;
+}
+.faq-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    
+}
+/* Each FAQ Question and Answer*/
+.faq-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+/* Text for question and Answer*/
+    .faq-item h4 {
+        cursor: pointer;
+        margin: 0;
+        font-size: 18px;
+        color: #333;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .faq-item p {
+        display: none; 
+        padding: 10px 0;
+        font-size: 16px;
+        color: #666;
+    }
+
+    /* Shows Answer when active*/
+    .faq-item.active p {
+        display: block;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Changes colour when hovered over */
+    .faq-item h4:hover {
+        color: #007bff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /*  Highlights border when focused */
+    .faq-item:focus-within {
+        border-color: #007bff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .faq-item p {
+        margin-top: 5px;
+        font-size: 14px;
+        color: #555;
+    }

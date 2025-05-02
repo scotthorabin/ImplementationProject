@@ -1,6 +1,6 @@
-
-using DissertationProject.Models;
+﻿using DissertationProject.Models;
 using FinalDis.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,21 +10,19 @@ namespace DissertationProject.Pages.Quizzes
     public class TakeQuizModel : PageModel
     {
         private readonly FinalDisContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        // Properties to store the quiz and user answers
         public Quiz Quiz { get; set; }
         public List<UserAnswer> UserAnswers { get; set; }
 
-        // Constructor to inject the database context
-        public TakeQuizModel(FinalDisContext context)
+        public TakeQuizModel(FinalDisContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET handler to fetch the quiz and its questions
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            // Fetch the quiz with its questions and answers from the database
             Quiz = await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.Answers)
@@ -35,7 +33,6 @@ namespace DissertationProject.Pages.Quizzes
                 return NotFound();
             }
 
-            // Initialize an empty list for user answers
             UserAnswers = new List<UserAnswer>();
             foreach (var question in Quiz.Questions)
             {
@@ -47,14 +44,15 @@ namespace DissertationProject.Pages.Quizzes
 
             return Page();
         }
-
-        // POST handler to process the submitted answers
         public async Task<IActionResult> OnPostAsync(int id, List<UserAnswer> userAnswers)
         {
-            // Fetch the quiz again to check the answers
+            var user = await _userManager.GetUserAsync(User);
+
+            // Fetch the quiz with its questions and answers, along with the associated topic
             Quiz = await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.Answers)
+                .Include(q => q.Topic)  // Include the Topic related to the quiz
                 .FirstOrDefaultAsync(q => q.QuizID == id);
 
             if (Quiz == null)
@@ -62,14 +60,13 @@ namespace DissertationProject.Pages.Quizzes
                 return NotFound();
             }
 
-            // Loop through the submitted answers and check correctness
+            // Counts the number of correct answers
             int correctAnswersCount = 0;
             foreach (var userAnswer in userAnswers)
             {
                 var question = Quiz.Questions.FirstOrDefault(q => q.QuestionID == userAnswer.QuestionID);
                 if (question != null)
                 {
-                    // Find the correct answer for the question
                     var correctAnswer = question.Answers.FirstOrDefault(a => a.IsCorrect);
                     if (correctAnswer != null && correctAnswer.AnswerID == userAnswer.SelectedAnswerID)
                     {
@@ -78,17 +75,47 @@ namespace DissertationProject.Pages.Quizzes
                 }
             }
 
-            // You can store or display the results as needed
-            TempData["Message"] = $"You got {correctAnswersCount} out of {Quiz.Questions.Count} correct.";
+            // Checks if user got all questions correct
+            if (correctAnswersCount == Quiz.Questions.Count)
+            {
+                // New badge
+                var badgeName = $"QuizCompleted_{Quiz.Topic.TopicName}";
 
+                // Check if the user has already received the badge for this topic
+                var alreadyHasBadge = await _context.UserAchievements
+                    .AnyAsync(a => a.UserId == user.Id && a.Badge == badgeName);
+
+                if (!alreadyHasBadge)
+                {
+                    // Create a new achievement record for the quiz completion
+                    var achievement = new UserAchievement
+                    {
+                        UserId = user.Id,
+                        Badge = badgeName,  // Use the dynamic badge name with topic name
+                        DateAchieved = DateTime.UtcNow
+                    };
+
+                    // Save changes
+                    _context.UserAchievements.Add(achievement);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            // Message that calculates and displays correct answers out of total questions
+            TempData["Message"] = $"You got {correctAnswersCount} out of {Quiz.Questions.Count} right.";
+
+            // Redirect to the Result page to display the result
             return RedirectToPage("/Result", new { id });
         }
-    }
 
-    // A helper class to hold user answers
-    public class UserAnswer
-    {
-        public int QuestionID { get; set; }
-        public int SelectedAnswerID { get; set; }
+
+
+
+
+        public class UserAnswer
+        {
+            public int QuestionID { get; set; }
+            public int SelectedAnswerID { get; set; }
+        }
     }
 }

@@ -15,13 +15,9 @@ public class QuizController : Controller
         _userManager = userManager;
     }
 
-    // Action to display the quiz
     public async Task<IActionResult> Index()
     {
-        var quizzes = await _context.Quizzes
-            .Include(q => q.Topic)
-            .ToListAsync();
-
+        var quizzes = await _context.Quizzes.Include(q => q.Topic).ToListAsync();
         return View(quizzes);
     }
 
@@ -30,7 +26,7 @@ public class QuizController : Controller
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
         {
-            return RedirectToAction("Login", "Account");  // Redirect to login if not logged in
+            return RedirectToAction("Login", "Account");
         }
 
         var quiz = await _context.Quizzes
@@ -47,75 +43,71 @@ public class QuizController : Controller
 
         foreach (var question in quiz.Questions)
         {
-            foreach (var answer in question.Answers)
+            var correctAnswer = question.Answers.FirstOrDefault(a => a.IsCorrect);
+            if (correctAnswer != null && selectedAnswers.Contains(correctAnswer.AnswerID))
             {
-                if (selectedAnswers.Contains(answer.AnswerID) && answer.IsCorrect)
-                {
-                    correctAnswersCount++;
-                }
+                correctAnswersCount++;
             }
         }
 
-        int pointsEarned = correctAnswersCount * 10;
+        TempData["Message"] = $"You got {correctAnswersCount} out of {quiz.Questions.Count} correct.";
 
-        if (correctAnswersCount == quiz.Questions.Count)
+        // Checks if the user already has the Achievement
+        var alreadyHasAchievement = await _context.UserAchievements
+            .AnyAsync(a => a.UserId == user.Id && a.Badge == "FirstQuizCompleted");
+
+        if (!alreadyHasAchievement)
         {
-            await AwardBadgeAsync(user, "PerfectQuizTaker");
+            // Give them the "achievement
+            var achievement = new UserAchievement
+            {
+                UserId = user.Id,
+                Badge = "FirstQuizCompleted",
+                DateAchieved = DateTime.UtcNow
+            };
+
+            _context.UserAchievements.Add(achievement);
+            await _context.SaveChangesAsync();
         }
-
-        // ✅ NEW LOGIC HERE: First-time quiz completion badge
-        var hasCompletedBadge = await _context.UserAchievements
-            .AnyAsync(ua => ua.UserId == user.Id && ua.Badge == "FirstQuizCompleted");
-
-        if (!hasCompletedBadge)
-        {
-            await AwardBadgeAsync(user, "FirstQuizCompleted");
-        }
-
-        TempData["Message"] = $"You earned {pointsEarned} points for completing the quiz.";
 
         return RedirectToAction("Result");
     }
 
-
-    private async Task AwardBadgeAsync(IdentityUser user, string badge)
-    {
-        // Check if the user already has the badge
-        var existingBadge = await _context.UserAchievements
-            .FirstOrDefaultAsync(ua => ua.UserId == user.Id && ua.Badge == badge);
-
-        // Only award the badge if the user hasn't already earned it
-        if (existingBadge == null)
-        {
-            var userAchievement = new UserAchievement
-            {
-                UserId = user.Id,
-                Badge = badge,
-                DateAchieved = DateTime.UtcNow
-            };
-
-            _context.UserAchievements.Add(userAchievement);
-            await _context.SaveChangesAsync();
-        }
-    }
     public async Task<IActionResult> Result()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return RedirectToAction("Login", "Account");  // Redirect to login if not logged in
-        }
+        if (user == null) return RedirectToAction("Login", "Account");
 
-        // Get the user's achievements (badges earned)
         var userAchievements = await _context.UserAchievements
-            .Where(ua => ua.UserId == user.Id)
+            .Where(a => a.UserId == user.Id)
             .ToListAsync();
 
-        ViewData["Message"] = TempData["Message"]?.ToString();
-        ViewData["UserAchievements"] = userAchievements;  // Pass achievements to the view
+        ViewData["Message"] = TempData["Message"];
+        ViewData["UserAchievements"] = userAchievements;
+
+        return View();
+    }
+
+    public async Task<IActionResult> Achievements()
+    {
+        // Get the currently logged-in user
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        // Fetch all achievements associated with the user
+        var userAchievements = await _context.UserAchievements
+            .Where(a => a.UserId == user.Id)
+            .ToListAsync();
+
+        // Pass the achievements to the view
+        ViewData["UserAchievements"] = userAchievements;
 
         return View();
     }
 
 }
+
 

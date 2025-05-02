@@ -1,5 +1,6 @@
 ﻿using DissertationProject.Models;
 using FinalDis.Data;
+using FinalDis.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,47 +14,10 @@ public static class DbInitializer
         SeedQuizzes(context);
         SeedQuestions(context);
         SeedUserAchievements(context);
-        SeedRoles(roleManager);
-        SeedUsers(userManager, roleManager, context);
+        SeedFAQ(context);
     }
 
-    private static void SeedRoles(RoleManager<IdentityRole> roleManager)
-    {
-        var roles = new[] { "Admin", "User", "Manager" };
-        foreach (var role in roles)
-        {
-            var roleExist = roleManager.RoleExistsAsync(role).Result;
-            if (!roleExist)
-            {
-                roleManager.CreateAsync(new IdentityRole(role)).Wait();
-            }
-        }
-    }
-
-    private static void SeedUsers(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, FinalDisContext context)
-    {
-        var users = new[]
-        {
-            new { Email = "admin@admin.com", UserName = "admin@admin.com", Role = "Admin" },
-            new { Email = "user@user.com", UserName = "user@user.com", Role = "User" },
-            new { Email = "Test@Test", UserName = "Test@Test", Role = "User" }
-        };
-
-        foreach (var userInfo in users)
-        {
-            var user = userManager.FindByEmailAsync(userInfo.Email).Result;
-            if (user == null)
-            {
-                user = new IdentityUser
-                {
-                    UserName = userInfo.UserName,
-                    Email = userInfo.Email,
-                };
-
-
-                }
-            }
-        }
+    // New Topics
 
     private static void SeedTopics(FinalDisContext context)
     {
@@ -514,6 +478,43 @@ public static class DbInitializer
 
         }
     }
+
+    // New static void that seeds the F&Q data
+    private static void SeedFAQ(FinalDisContext context)
+    {
+        // Check if FAQ data already exists
+        if (context.FAQs.Any())
+        {
+            return;   
+        }
+
+        // Add some FAQ data if not already seeded
+        context.FAQs.AddRange(
+            new FAQ
+            {
+                Question = "What is this website?",
+                Answer = "This is a platform that allows students to revise and retain computing topics using Quizzes. Once a quiz has been completed, a achievement is geven."
+            },
+            new FAQ
+            {
+                Question = "How do I take a quiz?",
+                Answer = "Simply select a quiz from the specific topic page and start answering the questions."
+            },
+            new FAQ
+            {
+                Question = "What are achievements?",
+                Answer = "Achievements are badges you earn when completing certain tasks, such as finishing a quiz."
+            },
+            new FAQ
+            {
+                Question = "Can I retake a quiz?",
+                Answer = "Yes, you can retake any quiz as many times as you like."
+            }
+        );
+
+        context.SaveChanges();
+    }
+
 
     private static void SeedUserAchievements(FinalDisContext context)
     {
