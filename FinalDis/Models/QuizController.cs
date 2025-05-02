@@ -21,6 +21,7 @@ public class QuizController : Controller
         return View(quizzes);
     }
 
+    // If user hasnt logged in then redirect to login page
     public async Task<IActionResult> SubmitQuiz(int quizId, List<int> selectedAnswers)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -58,7 +59,7 @@ public class QuizController : Controller
 
         if (!alreadyHasAchievement)
         {
-            // Give them the "achievement
+            // Give them the achievement
             var achievement = new UserAchievement
             {
                 UserId = user.Id,

@@ -15,7 +15,7 @@ namespace DissertationProject.Pages.Topics
 
         public List<Topic> Topics { get; set; }
         public List<Quiz> Quizzes { get; set; }
-        public int UserPoints { get; set; }  // Add UserPoints property to store the current user's points
+        public int UserPoints { get; set; }
 
         // Injecting FinalDisContext and UserManager
         public IndexModel(FinalDisContext context, UserManager<IdentityUser> userManager)
@@ -35,15 +35,15 @@ namespace DissertationProject.Pages.Topics
                 .ToListAsync();
 
             // Fetch the current user's points
-            var user = await _userManager.GetUserAsync(User);  // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);  
             if (user != null)
             {
                 var userPoints = await _context.UserPoints
-                    .FirstOrDefaultAsync(up => up.UserId == user.Id);  // Fetch the points for this user
+                    .FirstOrDefaultAsync(up => up.UserId == user.Id);  
 
                 if (userPoints != null)
                 {
-                    UserPoints = userPoints.Points;  // Set the UserPoints property
+                    UserPoints = userPoints.Points;  
                 }
             }
         }

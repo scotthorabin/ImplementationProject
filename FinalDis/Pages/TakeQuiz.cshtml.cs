@@ -48,7 +48,7 @@ namespace DissertationProject.Pages.Quizzes
         {
             var user = await _userManager.GetUserAsync(User);
 
-            // Fetch the quiz with its questions and answers, along with the associated topic
+            // Fetches the quiz with its questions and answers, along with the associated topic
             Quiz = await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.Answers)

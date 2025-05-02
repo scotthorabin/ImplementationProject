@@ -6,7 +6,7 @@
 
     public class Quiz
     {
-        public int QuizID { get; set; }
+        public int QuizID { get; set; } // Primary Key
 
         [Required]
         public string QuizTitle { get; set; }

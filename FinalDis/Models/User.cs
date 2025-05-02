@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public int UserID { get; set; }
+        public int UserID { get; set; } // Primary Key
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public string Email { get; set; }

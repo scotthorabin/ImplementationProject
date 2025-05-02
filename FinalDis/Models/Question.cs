@@ -6,7 +6,7 @@ namespace DissertationProject.Models
 
     public class Question
     {
-        public int QuestionID { get; set; }
+        public int QuestionID { get; set; } // Primary Key
 
         [Required]
         public string QuestionText { get; set; }

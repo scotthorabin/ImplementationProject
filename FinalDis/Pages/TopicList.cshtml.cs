@@ -31,19 +31,19 @@ namespace FinalDis.Pages
 
             // Fetch Quizzes and include their Topics (if needed) from the database
             Quizzes = await _context.Quizzes
-                .Include(q => q.Topic)  // Include the related Topic for each Quiz
+                .Include(q => q.Topic)  
                 .ToListAsync();
 
             // Fetch the current user's points
-            var user = await _userManager.GetUserAsync(User);  // Get the currently logged-in user
+            var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
                 var userPoints = await _context.UserPoints
-                    .FirstOrDefaultAsync(up => up.UserId == user.Id);  // Fetch the points for this user
+                    .FirstOrDefaultAsync(up => up.UserId == user.Id);  
 
                 if (userPoints != null)
                 {
-                    UserPoints = userPoints.Points;  // Set the UserPoints property
+                    UserPoints = userPoints.Points;  
                 }
             }
         }

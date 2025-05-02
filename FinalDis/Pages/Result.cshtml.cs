@@ -41,7 +41,7 @@ namespace DissertationProject.Pages
             // Retrieve the message from TempData
             Message = TempData["Message"]?.ToString();
 
-            // Display the badge names (example)
+            // Displays the badge names
             foreach (var achievement in UserAchievements)
             {
                 Console.WriteLine($"Earned Badge: {achievement.Badge}");

@@ -23,7 +23,7 @@
                     <li><img src="/Diss/img/user.png" alt="Profile" /><a asp-page="/Profile">My Profile</a></li>
                     <li>
                         <!--// Images obtained from Flaticon (2013)-->
-                        <img src="/Diss/img/left-arrow" alt="Logout Arrow - (Flaticon, 2013)" />
+                        <img src="/Diss/img/right-arrow" alt="Logout Arrow - (Flaticon, 2013)" />
                         <form method="post" asp-area="Identity" asp-page="/Account/Logout" class="d-inline">
                             <button type="submit" class="btn btn-link p-0">Logout</button>
                         </form>
@@ -112,6 +112,9 @@
                     }
                 </div>
             </div>
+            <!-- Right Navigation Button -->
+            <button class="scroll-btn right" onclick="scrollTopicsRight()">
+            </button>
         </div>
     </div>
 }
